@@ -1,0 +1,26 @@
+ ld_date = sy-datum.
+    lt_time = sy-uzeit.
+    ld_durt = 0500.
+
+*   Diminui em 5 minutos o horário atual
+    CALL FUNCTION 'TSTR_CALC_TIME'
+      EXPORTING
+        iv_begin_datelocal_req = ld_date
+        iv_begin_timelocal_req = lt_time
+        iv_duration            = ld_durt
+        iv_direction           = '-'
+      IMPORTING
+        ev_end_datelocal       = ld_date
+        ev_end_timelocal       = lt_time.
+
+    LOOP AT lt_yovp03 INTO ls_yovp03.
+      IF    ls_yovp03-erdat EQ ld_date
+        AND ls_yovp03-erzet GE lt_time
+        AND ls_yovp03-concil EQ c_i.
+
+        MESSAGE i226(yo_le) WITH vg_tknum.
+        CLEAR: gt_output, vg_tknum.
+        EXIT.
+      ENDIF.
+
+    ENDLOOP.
